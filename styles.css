@@ -1,0 +1,404 @@
+/* --- Design System & CSS Variables --- */
+:root {
+    /* Color Palette */
+    --medical-white: #FFFFFF;
+    --trust-blue: #2D5BFF;
+    --trust-blue-hover: #1e45cc;
+    --slate-grey: #4A5568;
+    --slate-light: #F7FAFC;
+    --slate-dark: #2D3748;
+    --emergency-red: #E53E3E;
+    --emergency-bg: #FFF5F5;
+
+    /* Theme - Light (Default) */
+    --bg-gradient: linear-gradient(135deg, #E2E8F0 0%, #EDF2F7 100%);
+    --glass-bg: rgba(255, 255, 255, 0.65);
+    --glass-border: rgba(255, 255, 255, 0.4);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+    --text-primary: var(--slate-dark);
+    --text-secondary: var(--slate-grey);
+    --input-bg: rgba(255, 255, 255, 0.8);
+    --message-user-bg: var(--trust-blue);
+    --message-user-text: var(--medical-white);
+    --message-ai-bg: var(--medical-white);
+    --message-ai-border: rgba(0,0,0,0.05);
+
+    /* Typography */
+    --font-main: 'Inter', sans-serif;
+}
+
+/* Dark Mode Theme Variables */
+[data-theme='dark'] {
+    --bg-gradient: linear-gradient(135deg, #1A202C 0%, #2D3748 100%);
+    --glass-bg: rgba(26, 32, 44, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+    --text-primary: #F7FAFC;
+    --text-secondary: #CBD5E0;
+    --input-bg: rgba(45, 55, 72, 0.8);
+    --message-ai-bg: #2D3748;
+    --message-ai-border: rgba(255,255,255,0.05);
+    --slate-light: #1A202C;
+}
+
+/* Hardware Media Query strictly per requirements, overrides default if no data-theme */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --bg-gradient: linear-gradient(135deg, #1A202C 0%, #2D3748 100%);
+        --glass-bg: rgba(26, 32, 44, 0.7);
+        --glass-border: rgba(255, 255, 255, 0.08);
+        --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+        --text-primary: #F7FAFC;
+        --text-secondary: #CBD5E0;
+        --input-bg: rgba(45, 55, 72, 0.8);
+        --message-ai-bg: #2D3748;
+        --message-ai-border: rgba(255,255,255,0.05);
+        --slate-light: #1A202C;
+    }
+}
+
+/* --- Reset & Base --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-main);
+    background: var(--bg-gradient);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* --- Structural UI --- */
+
+/* Theme Toggle Button */
+.theme-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: var(--glass-shadow);
+    color: var(--text-primary);
+    transition: transform 0.2s ease, background 0.3s ease;
+    z-index: 100;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.05);
+}
+
+/* App Container (Glassmorphism) */
+.app-container {
+    width: 100%;
+    max-width: 600px;
+    height: 90vh;
+    max-height: 800px;
+    display: flex;
+    flex-direction: column;
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    box-shadow: var(--glass-shadow);
+    overflow: hidden;
+    margin: 20px;
+}
+
+/* App Header */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--glass-border);
+    background: rgba(var(--medical-white), 0.1);
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.health-icon {
+    color: var(--trust-blue);
+}
+
+h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Pulse Indicator */
+.pulse-indicator-container {
+    position: relative;
+    width: 14px;
+    height: 14px;
+}
+
+.pulse-dot {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 14px;
+    height: 14px;
+    background-color: #38A169; /* Active Green */
+    border-radius: 50%;
+}
+
+.pulse-ring {
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    width: 22px;
+    height: 22px;
+    border: 2px solid #38A169;
+    border-radius: 50%;
+    animation: pulsate 2s infinite ease-out;
+}
+
+@keyframes pulsate {
+    0% { transform: scale(0.6); opacity: 1; }
+    100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* Chat Stream Area */
+.chat-stream {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    scroll-behavior: smooth;
+}
+
+/* Scrollbar styling for chat container */
+.chat-stream::-webkit-scrollbar { width: 6px; }
+.chat-stream::-webkit-scrollbar-track { background: transparent; }
+.chat-stream::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+[data-theme='dark'] .chat-stream::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); }
+
+/* Message Bubbles */
+.message {
+    max-width: 80%;
+    padding: 14px 18px;
+    border-radius: 18px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    animation: fadeIn 0.3s ease-in-out;
+    word-wrap: break-word;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.user-msg {
+    align-self: flex-end;
+    background-color: var(--message-user-bg);
+    color: var(--message-user-text);
+    border-bottom-right-radius: 4px;
+}
+
+.ai-msg {
+    align-self: flex-start;
+    background-color: var(--message-ai-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--message-ai-border);
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+}
+
+.disclaimer-msg {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    align-self: center;
+    text-align: center;
+    max-width: 90%;
+    margin-bottom: 8px;
+}
+
+/* Emergency Message styling in chat stream */
+.emergency-msg {
+    border-left: 4px solid var(--emergency-red);
+    background-color: var(--emergency-bg);
+    color: #9B2C2C; /* Dark red text */
+}
+
+/* Footer / Input Area */
+.app-footer {
+    padding: 20px 24px;
+    border-top: 1px solid var(--glass-border);
+    background: rgba(var(--medical-white), 0.1);
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    background: var(--input-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 30px;
+    padding: 6px 6px 6px 20px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    transition: border-color 0.2s ease;
+}
+
+.input-wrapper:focus-within {
+    border-color: var(--trust-blue);
+}
+
+#chat-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    outline: none;
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+#chat-input::placeholder {
+    color: var(--text-secondary);
+}
+
+#send-btn {
+    background-color: var(--trust-blue);
+    color: var(--medical-white);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+#send-btn:hover {
+    background-color: var(--trust-blue-hover);
+}
+
+#send-btn:active {
+    transform: scale(0.95);
+}
+
+/* --- Emergency Modal --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-content {
+    background: var(--medical-white);
+    /* For modal, force light/dark contrast */
+    border-radius: 16px;
+    padding: 32px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    transform: translateY(0);
+    transition: transform 0.3s ease;
+}
+
+[data-theme='dark'] .modal-content {
+    background: var(--slate-dark);
+}
+
+.modal-overlay.hidden .modal-content {
+    transform: translateY(20px);
+}
+
+.modal-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.modal-header h2 {
+    color: var(--text-primary);
+    font-size: 1.5rem;
+}
+
+.modal-content p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.btn-primary {
+    background-color: var(--emergency-red);
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #C53030;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .app-container {
+        margin: 0;
+        height: 100vh;
+        max-height: none;
+        border-radius: 0;
+        border: none;
+    }
+    .theme-toggle {
+        top: 10px;
+        right: 10px;
+        width: 40px;
+        height: 40px;
+    }
+}
